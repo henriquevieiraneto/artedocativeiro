@@ -1,9 +1,12 @@
-// --- CONFIGURAÇÕES DO REPOSITÓRIO ---
+// --- CONFIGURAÇÕES DO REPOSITÓRIO E TOKEN ---
 const REPO_OWNER = "henriquevieiraneto";   
 const REPO_NAME = "artedocativeiro";       
 const CAMINHO_BIBLIOTECA = "biblioteca";
 
-// ⚠️ Defina a senha que você quer usar para o Admin aqui
+// 🔑 Token fixo no código (totalmente novo e desbloqueado)
+const TOKEN_GIT = "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";
+
+// ⚠️ Senha do Admin
 const SENHA_ADMIN = "artedocativeiro2009";
 
 const lista = document.getElementById('listaArquivos');
@@ -17,7 +20,7 @@ const nomeEscolhido = document.getElementById('nomeArquivoEscolhido');
 
 let tokenGit = ""; // Guarda o token durante a sessão
 
-// --- 1. Lógica de Login (com senha e token automático) ---
+// --- 1. Lógica de Login ---
 formLogin.addEventListener('submit', function(e) {
     e.preventDefault();
     const user = document.getElementById('userAdmin').value.trim();
@@ -26,55 +29,13 @@ formLogin.addEventListener('submit', function(e) {
     if(user !== "admin") return alert("Usuário inválido!");
     if(senha !== SENHA_ADMIN) return alert("Senha incorreta!");
 
-    // Busca o token que está guardado nos Secrets do GitHub
-    fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/secrets/public-key`, {
-        headers: { "Authorization": `token ${localStorage.getItem('temp_token') || ''}` }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Se não tiver token secreto ainda, pede para o usuário digitar
-        const tokenInput = prompt("🔑 Digite seu Token de Acesso Pessoal do GitHub (seu token que começa com ghp_):");
-        if (!tokenInput) return alert("Você precisa do token para fazer upload!");
-        
-        // Testa a autenticação com o token digitado
-        return fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`, {
-            headers: { "Authorization": `token ${tokenInput}` }
-        })
-        .then(res => {
-            if(res.ok) {
-                tokenGit = tokenInput;
-                areaLogin.style.display = 'none';
-                areaUpload.style.display = 'block';
-                alert("✅ Logado com sucesso! Agora você pode enviar arquivos.");
-                document.getElementById('userAdmin').value = "";
-                document.getElementById('senhaAdmin').value = "";
-            } else {
-                alert("❌ Token inválido! Verifique se você gerou o token com permissão 'repo'.");
-            }
-        })
-        .catch(() => alert("❌ Erro ao conectar com o GitHub."));
-    })
-    .catch(() => {
-        // Caso não consiga acessar o secrets, cai no método manual (segurança extra)
-        const tokenInput = prompt("🔑 Digite seu Token de Acesso Pessoal do GitHub:");
-        if (!tokenInput) return alert("Token é necessário!");
-        fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`, {
-            headers: { "Authorization": `token ${tokenInput}` }
-        })
-        .then(res => {
-            if(res.ok) {
-                tokenGit = tokenInput;
-                areaLogin.style.display = 'none';
-                areaUpload.style.display = 'block';
-                alert("✅ Logado!");
-                document.getElementById('userAdmin').value = "";
-                document.getElementById('senhaAdmin').value = "";
-            } else {
-                alert("❌ Token inválido!");
-            }
-        })
-        .catch(() => alert("❌ Erro de rede."));
-    });
+    // Pega o token fixo e libera o painel
+    tokenGit = TOKEN_GIT;
+    areaLogin.style.display = 'none';
+    areaUpload.style.display = 'block';
+    alert("✅ Login Admin efetuado com sucesso!");
+    document.getElementById('userAdmin').value = "";
+    document.getElementById('senhaAdmin').value = "";
 });
 
 // --- 2. Logout ---
