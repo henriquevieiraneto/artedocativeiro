@@ -8,17 +8,17 @@ const inputFile = document.getElementById('inputFile');
 const nomeArquivoInput = document.getElementById('nomeArquivo');
 const nomeEscolhido = document.getElementById('nomeArquivoEscolhido');
 
-// Função para buscar e mostrar as músicas já enviadas
-async function carregarMusicas() {
-    lista.innerHTML = '<p style="color: #aaa; text-align: center;">Carregando músicas...</p>';
+// Função para buscar e mostrar os áudios já enviados
+async function carregarAudios() {
+    lista.innerHTML = '<p style="color: #aaa; text-align: center;">Carregando áudios...</p>';
     
     try {
-        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/public/musicas`);
+        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/public/audios`);
         const arquivos = await resposta.json();
         
         lista.innerHTML = '';
         if (!arquivos || arquivos.length === 0) {
-            lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhuma música enviada ainda.</p>';
+            lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhum áudio enviado ainda.</p>';
             return;
         }
 
@@ -29,7 +29,7 @@ async function carregarMusicas() {
             const card = document.createElement('div');
             card.className = 'card-arquivo';
             
-            const urlArquivo = `${SUPABASE_URL}/storage/v1/object/public/musicas/${item.name}`;
+            const urlArquivo = `${SUPABASE_URL}/storage/v1/object/public/audios/${item.name}`;
 
             card.innerHTML = `
                 <h4>🎵 ${item.name}</h4>
@@ -44,11 +44,11 @@ async function carregarMusicas() {
             lista.appendChild(card);
         });
     } catch (erro) {
-        lista.innerHTML = '<p style="color: #ffa500; text-align: center;">Nenhuma música encontrada. Envie a primeira!</p>';
+        lista.innerHTML = '<p style="color: #ffa500; text-align: center;">Nenhum áudio encontrado. Envie o primeiro!</p>';
     }
 }
 
-// Função de Upload Direto pelo site (Versão final e mais simples)
+// Função de Upload Direto pelo site
 formUpload.addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -58,11 +58,10 @@ formUpload.addEventListener('submit', async function(e) {
     const nomeArquivo = file.name; 
 
     try {
-        // Faz o upload direto para o caminho público com o token de anon
-        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/musicas/${nomeArquivo}`, {
+        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/audios/${nomeArquivo}`, {
             method: 'POST',
             headers: { 
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
             },
             body: file
         });
@@ -75,7 +74,7 @@ formUpload.addEventListener('submit', async function(e) {
         alert('✅ Upload feito com sucesso!');
         formUpload.reset();
         nomeEscolhido.textContent = '';
-        carregarMusicas(); // Recarrega a lista
+        carregarAudios();
 
     } catch (erro) {
         alert("❌ Erro no upload: " + erro.message);
@@ -88,5 +87,4 @@ inputFile.addEventListener('change', function() {
     }
 });
 
-// Carrega as músicas ao abrir a página
-carregarMusicas();
+carregarAudios();
