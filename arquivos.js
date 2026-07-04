@@ -208,4 +208,4 @@ inputFile.addEventListener('change', function() {
     }
 });
 
-renderizarArquivos();
+renderizarArquivos(); 
