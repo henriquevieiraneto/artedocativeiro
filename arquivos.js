@@ -1,205 +1,80 @@
-// --- CONFIGURAÇÕES DO REPOSITÓRIO ---
-const REPO_OWNER = "henriquevieiraneto";   
-const REPO_NAME = "artedocativeiro";       
-const CAMINHO_BIBLIOTECA = "biblioteca";
-
-// 🔑 Token fixo (Já está definido como constante global)
-const TOKEN_GIT = "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";
-
-// ⚠️ Senha do Admin
-const SENHA_ADMIN = "artedocativeiro2009";
+// --- CONFIGURAÇÃO DO SUPABASE (JÁ COM SEUS DADOS) ---
+const SUPABASE_URL = "https://nuoyysipwgsdjiccleta.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_9m31WHs2DToUQ93NIz-7ng_ZrecsVL-";
 
 const lista = document.getElementById('listaArquivos');
-const formLogin = document.getElementById('formLogin');
-const areaLogin = document.getElementById('areaLogin');
-const areaUpload = document.getElementById('areaUpload');
 const formUpload = document.getElementById('formUpload');
 const inputFile = document.getElementById('inputFile');
 const nomeArquivoInput = document.getElementById('nomeArquivo');
 const nomeEscolhido = document.getElementById('nomeArquivoEscolhido');
 
-let tokenGit = ""; 
+// Função para buscar e mostrar as músicas já enviadas
+async function carregarMusicas() {
+    lista.innerHTML = '<p style="color: #aaa; text-align: center;">Carregando músicas...</p>';
+    
+    try {
+        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/public/musicas`);
+        const arquivos = await resposta.json();
+        
+        lista.innerHTML = '';
+        if (!arquivos || arquivos.length === 0) {
+            lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhuma música enviada ainda.</p>';
+            return;
+        }
 
-// --- 1. Lógica de Login ---
-formLogin.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const user = document.getElementById('userAdmin').value.trim();
-    const senha = document.getElementById('senhaAdmin').value.trim();
-
-    if(user !== "admin") return alert("Usuário inválido!");
-    if(senha !== SENHA_ADMIN) return alert("Senha incorreta!");
-
-    // Atribui o token global à variável de sessão
-    tokenGit = TOKEN_GIT;
-    areaLogin.style.display = 'none';
-    areaUpload.style.display = 'block';
-    alert("✅ Login Admin efetuado!");
-    document.getElementById('userAdmin').value = "";
-    document.getElementById('senhaAdmin').value = "";
-});
-
-// --- 2. Logout ---
-function logout() {
-    tokenGit = "";
-    areaUpload.style.display = 'none';
-    areaLogin.style.display = 'block';
-    location.reload();
-}
-
-// --- 3. Carregar e renderizar a lista pública ---
-function renderizarArquivos() {
-    lista.innerHTML = '<p style="color: #aaa; text-align: center;">Carregando biblioteca...</p>';
-
-    fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/lista.json`)
-        .then(res => {
-            if(!res.ok) throw new Error("Catálogo não encontrado");
-            return res.json();
-        })
-        .then(data => {
-            const catalogo = JSON.parse(atob(data.content));
+        arquivos.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card-arquivo';
             
-            lista.innerHTML = '';
-            if (catalogo.length === 0) {
-                lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhum arquivo no catálogo ainda.</p>';
-                return;
-            }
+            const urlArquivo = `${SUPABASE_URL}/storage/v1/object/public/musicas/${item.name}`;
 
-            catalogo.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card-arquivo';
-                
-                let icone = '📄';
-                let conteudo = '';
-                const urlArquivo = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${CAMINHO_BIBLIOTECA}/${item.arquivo}`;
-
-                if (item.tipo.includes('audio')) {
-                    icone = '🎵';
-                    conteudo = `<audio class="player-audio" controls>
-                                    <source src="${urlArquivo}" type="${item.tipo}">
-                                    Seu navegador não suporta áudio.
-                                </audio>`;
-                } 
-                else if (item.tipo.includes('video')) {
-                    icone = '🎬';
-                    conteudo = `<video class="player-video" controls>
-                                    <source src="${urlArquivo}" type="${item.tipo}">
-                                    Seu navegador não suporta vídeo.
-                                </video>`;
-                } 
-                else if (item.tipo.includes('pdf')) {
-                    icone = '📖';
-                    conteudo = `<iframe src="${urlArquivo}" style="width: 100%; height: 200px; border: none; margin-top: 10px; border-radius: 5px;"></iframe>`;
-                } 
-                else if (item.tipo.includes('text')) {
-                    icone = '📝';
-                    conteudo = `<div class="visualizador-texto">
-                                    <a href="${urlArquivo}" target="_blank" style="color: #4caf50; text-decoration: underline;">Clique aqui para ler o texto</a>
-                                </div>`;
-                } 
-                else if (item.tipo.includes('image')) {
-                    icone = '🖼️';
-                    conteudo = `<img src="${urlArquivo}" class="visualizador-imagem" alt="Imagem">`;
-                } 
-                else {
-                    conteudo = `<a href="${urlArquivo}" target="_blank" style="color: #4caf50; text-decoration: underline; margin-top:10px; display:block;">📂 Abrir arquivo</a>`;
-                }
-
-                card.innerHTML = `
-                    <h4>${icone} ${item.nome}</h4>
-                    <p>${item.tipo}</p>
-                    ${conteudo}
-                `;
-                lista.appendChild(card);
-            });
-        })
-        .catch(() => {
-            lista.innerHTML = `<p style="color: #ffa500; text-align: center;">
-                ⚠️ Nenhum catálogo encontrado. <br>
-                <span style="font-size:13px; color:#aaa;">Faça login para enviar o primeiro arquivo.</span>
-            </p>`;
+            card.innerHTML = `
+                <h4>🎵 ${item.name}</h4>
+                <audio class="player-audio" controls>
+                    <source src="${urlArquivo}" type="audio/mpeg">
+                    Seu navegador não suporta áudio.
+                </audio>
+            `;
+            lista.appendChild(card);
         });
+    } catch (erro) {
+        lista.innerHTML = '<p style="color: #ffa500; text-align: center;">Nenhuma música encontrada. Envie a primeira!</p>';
+    }
 }
 
-// --- 4. Upload Automático (AQUI ESTÁ A CORREÇÃO) ---
-formUpload.addEventListener('submit', function(e) {
+// Função de Upload Direto pelo site
+formUpload.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    const nomePersonalizado = nomeArquivoInput.value.trim() || inputFile.files[0].name;
     const file = inputFile.files[0];
-
     if (!file) return alert('Por favor, selecione um arquivo!');
 
-    // CORREÇÃO: Usa a CONSTANTE GLOBAL direto no cabeçalho, sem depender da variável tokenGit
-    const tokenParaEnvio = TOKEN_GIT; 
+    // Prepara o upload para o Supabase
+    const nomeArquivo = file.name;
 
-    const reader = new FileReader();
-    reader.onload = async function(event) {
-        const base64Data = event.target.result.split(',')[1];
-        const fileName = file.name;
+    try {
+        // Envia o arquivo diretamente para a nuvem
+        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/musicas/${nomeArquivo}`, {
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': file.type 
+            },
+            body: file
+        });
 
-        try {
-            const responseFile = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/${fileName}`, {
-                method: 'PUT',
-                // AQUI ESTÁ A GARANTIA: Usa o token diretamente
-                headers: { "Authorization": `token ${tokenParaEnvio}` },
-                body: JSON.stringify({
-                    message: `Adicionando ${nomePersonalizado}`,
-                    content: base64Data
-                })
-            });
-
-            if (!responseFile.ok) {
-                const errorData = await responseFile.json();
-                throw new Error(errorData.message);
-            }
-
-            // ... Restante do código de atualização do JSON ...
-            let catalogoAtual = [];
-            try {
-                const responseJson = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/lista.json`, {
-                    headers: { "Authorization": `token ${tokenParaEnvio}` }
-                });
-                if(responseJson.ok) {
-                    const dataJson = await responseJson.json();
-                    catalogoAtual = JSON.parse(atob(dataJson.content));
-                }
-            } catch(e) {}
-
-            const jaExiste = catalogoAtual.some(item => item.arquivo === fileName);
-            if(!jaExiste) {
-                catalogoAtual.push({
-                    nome: nomePersonalizado,
-                    tipo: file.type,
-                    arquivo: fileName
-                });
-            }
-
-            const novoJsonBase64 = btoa(JSON.stringify(catalogoAtual, null, 2));
-            const responseJsonUpdate = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/lista.json`, {
-                method: 'PUT',
-                headers: { "Authorization": `token ${tokenParaEnvio}` },
-                body: JSON.stringify({
-                    message: `Atualizando lista de arquivos`,
-                    content: novoJsonBase64
-                })
-            });
-
-            if(!responseJsonUpdate.ok) {
-                const errorData = await responseJsonUpdate.json();
-                throw new Error(errorData.message);
-            }
-
-            alert('✅ Upload automático feito com sucesso!');
-            formUpload.reset();
-            nomeEscolhido.textContent = '';
-            renderizarArquivos();
-
-        } catch (error) {
-            console.error(error);
-            alert("❌ Erro no upload: " + error.message);
+        if (!resposta.ok) {
+            throw new Error('Erro ao enviar o arquivo');
         }
-    };
-    reader.readAsDataURL(file);
+
+        alert('✅ Upload feito com sucesso!');
+        formUpload.reset();
+        nomeEscolhido.textContent = '';
+        carregarMusicas(); // Recarrega a lista
+
+    } catch (erro) {
+        alert("❌ Erro no upload: " + erro.message);
+    }
 });
 
 inputFile.addEventListener('change', function() {
@@ -208,4 +83,5 @@ inputFile.addEventListener('change', function() {
     }
 });
 
-renderizarArquivos(); 
+// Carrega as músicas ao abrir a página
+carregarMusicas();
