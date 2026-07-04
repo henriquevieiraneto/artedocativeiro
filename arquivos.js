@@ -3,8 +3,10 @@ const REPO_OWNER = "henriquevieiraneto";
 const REPO_NAME = "artedocativeiro";       
 const CAMINHO_BIBLIOTECA = "biblioteca";
 
+const VERSAO_SITE = "v2"; // Mudar isso força a reinicialização
+
 // 🔑 Token fixo no código (totalmente novo e desbloqueado)
-const TOKEN_GIT = "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"; //aaa
+const TOKEN_GIT = "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"; //aaa
 
 // ⚠️ Senha do Admin
 const SENHA_ADMIN = "admin";
