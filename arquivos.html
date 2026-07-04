@@ -20,25 +20,13 @@
     <div class="container">
         <header class="cabecalho-arquivos">
             <h1>📚 Biblioteca de Arquivos</h1>
-            <p>Aqui você pode ouvir e assistir músicas, letras e vídeos da nossa capoeira.</p>
+            <p>Aqui você pode enviar, ouvir e baixar músicas e vídeos da nossa capoeira. (Público)</p>
         </header>
 
-        <!-- Área de Login do Admin (Agora com usuário e senha fixos) -->
-        <div id="areaLogin" class="area-login">
-            <h3>🔐 Área Restrita (Envio de Arquivos)</h3>
-            <form id="formLogin">
-                <input type="text" id="userAdmin" placeholder="Usuário Admin" required>
-                <input type="password" id="senhaAdmin" placeholder="Senha Admin" required>
-                <button type="submit" class="btn-login">Acessar Painel</button>
-            </form>
-            <p style="font-size: 12px; color: #aaa; margin-top: 10px;">Apenas o administrador pode enviar novos arquivos.</p>
-        </div>
-
-        <!-- Área de Upload do Admin (fica escondida até logar) -->
-        <div id="areaUpload" class="area-upload" style="display: none;">
-            <h3>📤 Enviar Novo Arquivo (Admin)</h3>
-            <button onclick="logout()" class="btn-sair">🚪 Sair do Admin</button>
-            <br><br>
+        <!-- Área de Upload (Aberta para todos) -->
+        <div class="area-upload">
+            <h3>📤 Enviar Novo Arquivo</h3>
+            <p class="sub-info">Formatos suportados: MP3, MP4, PDF, TXT, JPG.</p>
             
             <form id="formUpload">
                 <div class="campo-nome">
@@ -50,7 +38,7 @@
                 <span id="nomeArquivoEscolhido" class="nome-escolhido"></span>
                 
                 <br><br>
-                <button type="submit" class="btn-enviar">🚀 Enviar Direto para o GitHub</button>
+                <button type="submit" class="btn-enviar">🚀 Enviar para Biblioteca</button>
             </form>
         </div>
 

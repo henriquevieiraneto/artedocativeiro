@@ -43,26 +43,6 @@ nav ul li a:hover, nav ul li a.ativo {
 .cabecalho-arquivos h1 { color: #d4af37; font-size: 2.5rem; }
 .cabecalho-arquivos p { color: #aaa; }
 
-/* --- Área de Login --- */
-.area-login {
-    background-color: #142814;
-    border: 1px solid #d4af37;
-    border-radius: 15px;
-    padding: 30px;
-    text-align: center;
-    margin-bottom: 30px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-.area-login h3 { color: #d4af37; margin-bottom: 15px; }
-.area-login input {
-    width: 90%; padding: 10px; border-radius: 5px; border: none; margin-bottom: 10px; box-sizing: border-box;
-}
-.btn-login {
-    background-color: #2196F3; color: white; border: none; padding: 10px 30px; border-radius: 5px; cursor: pointer; font-weight: bold;
-}
-
 /* --- Área de Upload --- */
 .area-upload {
     background-color: #142814;
@@ -73,10 +53,7 @@ nav ul li a:hover, nav ul li a.ativo {
     margin-bottom: 30px;
 }
 .area-upload h3 { color: #d4af37; margin-bottom: 10px; }
-.btn-sair {
-    background-color: #f44336; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;
-    float: right;
-}
+.sub-info { color: #aaa; font-size: 14px; margin-bottom: 15px; }
 .campo-nome { margin-bottom: 15px; }
 .campo-nome input {
     width: 80%; padding: 10px; border-radius: 5px; border: none; max-width: 400px;

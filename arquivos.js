@@ -1,4 +1,4 @@
-// --- CONFIGURAÇÃO DO SUPABASE (JÁ COM SEUS DADOS) ---
+// --- CONFIGURAÇÃO DO SUPABASE ---
 const SUPABASE_URL = "https://nuoyysipwgsdjiccleta.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_9m31WHs2DToUQ93NIz-7ng_ZrecsVL-";
 
@@ -22,6 +22,9 @@ async function carregarMusicas() {
             return;
         }
 
+        // Ordena do mais novo para o mais antigo
+        arquivos.reverse();
+
         arquivos.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card-arquivo';
@@ -34,6 +37,9 @@ async function carregarMusicas() {
                     <source src="${urlArquivo}" type="audio/mpeg">
                     Seu navegador não suporta áudio.
                 </audio>
+                <div style="margin-top: 10px;">
+                    <a href="${urlArquivo}" target="_blank" style="color: #4caf50; text-decoration: underline;">⬇️ Baixar Música</a>
+                </div>
             `;
             lista.appendChild(card);
         });
@@ -42,15 +48,15 @@ async function carregarMusicas() {
     }
 }
 
-// Função de Upload Direto pelo site
+// Função de Upload Direto pelo site (Aberto para todos)
 formUpload.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const file = inputFile.files[0];
     if (!file) return alert('Por favor, selecione um arquivo!');
 
-    // Prepara o upload para o Supabase
-    const nomeArquivo = file.name;
+    // Mantém o nome do arquivo original para evitar conflitos
+    const nomeArquivo = file.name; 
 
     try {
         // Envia o arquivo diretamente para a nuvem
