@@ -48,10 +48,7 @@ async function carregarMusicas() {
     }
 }
 
-// TRUQUE DO PROXY: Isso ignora o bloqueio do Supabase
-const PROXY_URL = "https://corsproxy.io/?";
-
-// Função de Upload Direto pelo site
+// Função de Upload com URL Assinada (Sem bloqueio de CORS)
 formUpload.addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -61,17 +58,26 @@ formUpload.addEventListener('submit', async function(e) {
     const nomeArquivo = file.name; 
 
     try {
-        // Envia o arquivo usando o proxy para furar o bloqueio
-        const resposta = await fetch(`${PROXY_URL}${SUPABASE_URL}/storage/v1/object/musicas/${nomeArquivo}`, {
+        // 1. Pede ao Supabase uma URL temporária para fazer o upload
+        const respostaToken = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/musicas/${nomeArquivo}`, {
             method: 'POST',
-            headers: { 
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': file.type 
-            },
+            headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        });
+
+        if (!respostaToken.ok) {
+            throw new Error('Não foi possível obter a URL de upload');
+        }
+
+        const dados = await respostaToken.json();
+        const urlUpload = dados.signedUrl; // O link temporário que aceita o arquivo
+
+        // 2. Envia o arquivo diretamente para essa URL (Isso ignora o CORS)
+        const respostaUpload = await fetch(urlUpload, {
+            method: 'PUT',
             body: file
         });
 
-        if (!resposta.ok) {
+        if (!respostaUpload.ok) {
             throw new Error('Erro ao enviar o arquivo');
         }
 
