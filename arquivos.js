@@ -7,7 +7,7 @@ const CAMINHO_BIBLIOTECA = "biblioteca";
 const TOKEN_GIT = "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";
 
 // ⚠️ Senha do Admin
-const SENHA_ADMIN = "artedocativeiro2009";
+const SENHA_ADMIN = "admin";
 
 const lista = document.getElementById('listaArquivos');
 const formLogin = document.getElementById('formLogin');
