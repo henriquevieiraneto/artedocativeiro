@@ -1,90 +1,51 @@
-// --- CONFIGURAÇÃO DO SUPABASE ---
-const SUPABASE_URL = "https://nuoyysipwgsdjiccleta.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_9m31WHs2DToUQ93NIz-7ng_ZrecsVL-";
-
+// --- VERSÃO NETLIFY (SEM SUPABASE, SEM ERROS) ---
 const lista = document.getElementById('listaArquivos');
 const formUpload = document.getElementById('formUpload');
 const inputFile = document.getElementById('inputFile');
 const nomeArquivoInput = document.getElementById('nomeArquivo');
 const nomeEscolhido = document.getElementById('nomeArquivoEscolhido');
 
-// Função para buscar e mostrar os áudios já enviados
-async function carregarAudios() {
-    lista.innerHTML = '<p style="color: #aaa; text-align: center;">Carregando áudios...</p>';
-    
-    try {
-        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/public/audios`);
-        const arquivos = await resposta.json();
-        
-        lista.innerHTML = '';
-        if (!arquivos || arquivos.length === 0) {
-            lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhum áudio enviado ainda.</p>';
-            return;
-        }
-
-        // Ordena do mais novo para o mais antigo
-        arquivos.reverse();
-
-        arquivos.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card-arquivo';
-            
-            const urlArquivo = `${SUPABASE_URL}/storage/v1/object/public/audios/${item.name}`;
-
-            card.innerHTML = `
-                <h4>🎵 ${item.name}</h4>
-                <audio class="player-audio" controls>
-                    <source src="${urlArquivo}" type="audio/mpeg">
-                    Seu navegador não suporta áudio.
-                </audio>
-                <div style="margin-top: 10px;">
-                    <a href="${urlArquivo}" target="_blank" style="color: #4caf50; text-decoration: underline;">⬇️ Baixar Música</a>
-                </div>
-            `;
-            lista.appendChild(card);
-        });
-    } catch (erro) {
-        lista.innerHTML = '<p style="color: #ffa500; text-align: center;">Nenhum áudio encontrado. Envie o primeiro!</p>';
-    }
+// Oculta o formulário de upload, pois agora faremos pelo painel
+if (formUpload) {
+    formUpload.style.display = 'none';
 }
 
-// Função de Upload Direto pelo site
-formUpload.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const file = inputFile.files[0];
-    if (!file) return alert('Por favor, selecione um arquivo!');
+// Lista de músicas (adicione aqui conforme for colocando os MP3s na pasta)
+const catalogo = [
+    { nome: "Capoeira é nossa arte", arquivo: "Capoeira é Nossa Arte.mp3" }
+];
 
-    const nomeArquivo = file.name; 
-
-    try {
-        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/audios/${nomeArquivo}`, {
-            method: 'POST',
-            headers: { 
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body: file
-        });
-
-        if (!resposta.ok) {
-            const erroDetalhe = await resposta.text();
-            throw new Error(`Erro ${resposta.status}: ${erroDetalhe}`);
-        }
-
-        alert('✅ Upload feito com sucesso!');
-        formUpload.reset();
-        nomeEscolhido.textContent = '';
-        carregarAudios();
-
-    } catch (erro) {
-        alert("❌ Erro no upload: " + erro.message);
+function renderizarArquivos() {
+    lista.innerHTML = '';
+    if (catalogo.length === 0) {
+        lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhuma música encontrada.</p>';
+        return;
     }
-});
 
+    catalogo.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card-arquivo';
+        const urlArquivo = `audios/${item.arquivo}`;
+
+        card.innerHTML = `
+            <h4>🎵 ${item.nome}</h4>
+            <audio class="player-audio" controls>
+                <source src="${urlArquivo}" type="audio/mpeg">
+                Seu navegador não suporta áudio.
+            </audio>
+            <div style="margin-top: 10px;">
+                <a href="${urlArquivo}" target="_blank" style="color: #4caf50; text-decoration: underline;">⬇️ Baixar Música</a>
+            </div>
+        `;
+        lista.appendChild(card);
+    });
+}
+
+// Apenas para mostrar o nome do arquivo escolhido (sem função de envio)
 inputFile.addEventListener('change', function() {
     if (this.files && this.files[0]) {
         nomeEscolhido.textContent = `Arquivo selecionado: ${this.files[0].name}`;
     }
 });
 
-carregarAudios();
+renderizarArquivos();
