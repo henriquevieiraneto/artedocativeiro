@@ -206,3 +206,5 @@ inputFile.addEventListener('change', function() {
 });
 
 renderizarArquivos();
+// TESTE: Mostra o token no console para ver se está vazio
+console.log("Token que o site está usando:", tokenGit);
