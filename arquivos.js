@@ -1,15 +1,13 @@
-// --- CONFIGURAÇÕES DO REPOSITÓRIO E TOKEN ---
+// --- CONFIGURAÇÕES DO REPOSITÓRIO ---
 const REPO_OWNER = "henriquevieiraneto";   
 const REPO_NAME = "artedocativeiro";       
 const CAMINHO_BIBLIOTECA = "biblioteca";
 
-const VERSAO_SITE = "v2"; // Mudar isso força a reinicialização
-
-// 🔑 Token fixo no código (totalmente novo e desbloqueado)
-const TOKEN_GIT = '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';
+// 🔑 Token fixo (Já está definido como constante global)
+const TOKEN_GIT = "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";
 
 // ⚠️ Senha do Admin
-const SENHA_ADMIN = "admin";
+const SENHA_ADMIN = "artedocativeiro2009";
 
 const lista = document.getElementById('listaArquivos');
 const formLogin = document.getElementById('formLogin');
@@ -20,7 +18,7 @@ const inputFile = document.getElementById('inputFile');
 const nomeArquivoInput = document.getElementById('nomeArquivo');
 const nomeEscolhido = document.getElementById('nomeArquivoEscolhido');
 
-let tokenGit = ""; // Guarda o token durante a sessão
+let tokenGit = ""; 
 
 // --- 1. Lógica de Login ---
 formLogin.addEventListener('submit', function(e) {
@@ -31,11 +29,11 @@ formLogin.addEventListener('submit', function(e) {
     if(user !== "admin") return alert("Usuário inválido!");
     if(senha !== SENHA_ADMIN) return alert("Senha incorreta!");
 
-    // Pega o token fixo e libera o painel
+    // Atribui o token global à variável de sessão
     tokenGit = TOKEN_GIT;
     areaLogin.style.display = 'none';
     areaUpload.style.display = 'block';
-    alert("✅ Login Admin efetuado com sucesso!");
+    alert("✅ Login Admin efetuado!");
     document.getElementById('userAdmin').value = "";
     document.getElementById('senhaAdmin').value = "";
 });
@@ -50,7 +48,7 @@ function logout() {
 
 // --- 3. Carregar e renderizar a lista pública ---
 function renderizarArquivos() {
-    lista.innerHTML = '<p style="color: #aaa; text-align: center; grid-column: 1/-1;">Carregando biblioteca...</p>';
+    lista.innerHTML = '<p style="color: #aaa; text-align: center;">Carregando biblioteca...</p>';
 
     fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/lista.json`)
         .then(res => {
@@ -62,7 +60,7 @@ function renderizarArquivos() {
             
             lista.innerHTML = '';
             if (catalogo.length === 0) {
-                lista.innerHTML = '<p style="color: #aaa; text-align: center; grid-column: 1/-1;">Nenhum arquivo no catálogo ainda.</p>';
+                lista.innerHTML = '<p style="color: #aaa; text-align: center;">Nenhum arquivo no catálogo ainda.</p>';
                 return;
             }
 
@@ -115,14 +113,14 @@ function renderizarArquivos() {
             });
         })
         .catch(() => {
-            lista.innerHTML = `<p style="color: #ffa500; text-align: center; grid-column: 1/-1;">
+            lista.innerHTML = `<p style="color: #ffa500; text-align: center;">
                 ⚠️ Nenhum catálogo encontrado. <br>
-                <span style="font-size:13px; color:#aaa;">Faça login como Admin para enviar o primeiro arquivo.</span>
+                <span style="font-size:13px; color:#aaa;">Faça login para enviar o primeiro arquivo.</span>
             </p>`;
         });
 }
 
-// --- 4. Upload Automático para o GitHub ---
+// --- 4. Upload Automático (AQUI ESTÁ A CORREÇÃO) ---
 formUpload.addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -130,6 +128,9 @@ formUpload.addEventListener('submit', function(e) {
     const file = inputFile.files[0];
 
     if (!file) return alert('Por favor, selecione um arquivo!');
+
+    // CORREÇÃO: Usa a CONSTANTE GLOBAL direto no cabeçalho, sem depender da variável tokenGit
+    const tokenParaEnvio = TOKEN_GIT; 
 
     const reader = new FileReader();
     reader.onload = async function(event) {
@@ -139,7 +140,8 @@ formUpload.addEventListener('submit', function(e) {
         try {
             const responseFile = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/${fileName}`, {
                 method: 'PUT',
-                headers: { "Authorization": `token ${tokenGit}` },
+                // AQUI ESTÁ A GARANTIA: Usa o token diretamente
+                headers: { "Authorization": `token ${tokenParaEnvio}` },
                 body: JSON.stringify({
                     message: `Adicionando ${nomePersonalizado}`,
                     content: base64Data
@@ -151,10 +153,11 @@ formUpload.addEventListener('submit', function(e) {
                 throw new Error(errorData.message);
             }
 
+            // ... Restante do código de atualização do JSON ...
             let catalogoAtual = [];
             try {
                 const responseJson = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/lista.json`, {
-                    headers: { "Authorization": `token ${tokenGit}` }
+                    headers: { "Authorization": `token ${tokenParaEnvio}` }
                 });
                 if(responseJson.ok) {
                     const dataJson = await responseJson.json();
@@ -174,7 +177,7 @@ formUpload.addEventListener('submit', function(e) {
             const novoJsonBase64 = btoa(JSON.stringify(catalogoAtual, null, 2));
             const responseJsonUpdate = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${CAMINHO_BIBLIOTECA}/lista.json`, {
                 method: 'PUT',
-                headers: { "Authorization": `token ${tokenGit}` },
+                headers: { "Authorization": `token ${tokenParaEnvio}` },
                 body: JSON.stringify({
                     message: `Atualizando lista de arquivos`,
                     content: novoJsonBase64
@@ -186,7 +189,7 @@ formUpload.addEventListener('submit', function(e) {
                 throw new Error(errorData.message);
             }
 
-            alert('✅ Upload automático feito com sucesso!\nAtualize a página para ver o player.');
+            alert('✅ Upload automático feito com sucesso!');
             formUpload.reset();
             nomeEscolhido.textContent = '';
             renderizarArquivos();
@@ -206,5 +209,3 @@ inputFile.addEventListener('change', function() {
 });
 
 renderizarArquivos();
-// TESTE: Mostra o token no console para ver se está vazio
-console.log("Token que o site está usando:", tokenGit);
