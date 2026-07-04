@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa Online - Arte do Cativeiro</title>
+    <link rel="stylesheet" href="rifas.css">
+</head>
+<body>
+
+    <nav>
+        <h2>🏆 Arte do Cativeiro</h2>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="rifas.html" class="ativo">Rifas</a></li>
+            <li><a href="arquivos.html">Arquivos</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <header class="cabecalho-rifa">
+            <h1>Rifa On-Line</h1>
+            <h2>Concorra a um Berimbau de Capoeira!</h2>
+        </header>
+
+        <!-- ÁREA DE CADASTRO EM LOTE -->
+        <div class="painel-cadastro">
+            <h3>📦 Cadastro Rápido em Lote</h3>
+            <p class="sub-info">Preencha os dados abaixo e marque os números que deseja comprar.</p>
+            
+            <form id="formLote">
+                <div class="linha-cadastro">
+                    <div class="campo-lote">
+                        <label>Nome Completo:</label>
+                        <input type="text" id="nomeLote" placeholder="Nome do comprador">
+                    </div>
+                    <div class="campo-lote">
+                        <label>Telefone (WhatsApp):</label>
+                        <input type="text" id="telefoneLote" placeholder="(11) 99999-9999">
+                    </div>
+                    <div class="campo-lote">
+                        <label>Endereço:</label>
+                        <input type="text" id="enderecoLote" placeholder="Rua, Bairro, Cidade">
+                    </div>
+                </div>
+
+                <div class="linha-acao">
+                    <div class="totalizador">
+                        Rifas selecionadas: <span id="qtdSelecionada">0</span> 
+                        | Valor unitário: R$ 5,00 
+                        | <strong>Total: R$ <span id="valorTotal">0,00</span></strong>
+                    </div>
+                    <button type="button" class="btn-finalizar-lote" onclick="finalizarLote()">✅ Finalizar Cadastro em Lote</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- GRID DE NÚMEROS -->
+        <h3 class="titulo-bloco">Bloco: 301 a 350</h3>
+        <div class="numeros-grid" id="gridNumeros"></div>
+
+        <div class="footer-pix">
+            <p>PAGAMENTO VIA PIX</p>
+            <p>Chave Pix:</p>
+            <div class="chave-pix">128.868.469-02</div>
+            <p class="obs-pix">* Após o cadastro em lote, realize o pagamento do valor total.</p>
+        </div>
+    </div>
+
+    <!-- MODAL EDIÇÃO INDIVIDUAL -->
+    <div id="modalVenda" class="modal">
+        <div class="modal-content">
+            <h2>Editar Número <span id="numeroSelecionadoDisplay">---</span></h2>
+            <form id="formVenda">
+                <div class="form-group">
+                    <label>Nome:</label>
+                    <input type="text" id="nome" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone:</label>
+                    <input type="text" id="telefone" required>
+                </div>
+                <div class="form-group">
+                    <label>Endereço:</label>
+                    <input type="text" id="endereco" required>
+                </div>
+                <div class="btn-container-modal">
+                    <button type="button" class="btn-editar" onclick="salvarVenda(true)">✏️ Atualizar</button>
+                    <button type="button" class="btn-excluir" onclick="excluirVenda()">🗑️ Excluir</button>
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">Fechar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="rifas.js"></script>
+</body>
+</html>

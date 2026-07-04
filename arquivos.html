@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquivos - Arte do Cativeiro</title>
+    <link rel="stylesheet" href="arquivos.css">
+</head>
+<body>
+
+    <nav>
+        <h2>🏆 Arte do Cativeiro</h2>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="rifas.html">Rifas</a></li>
+            <li><a href="arquivos.html" class="ativo">Arquivos</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <header class="cabecalho-arquivos">
+            <h1>📚 Biblioteca de Arquivos</h1>
+            <p>Aqui você pode ouvir e assistir músicas, letras e vídeos da nossa capoeira.</p>
+        </header>
+
+        <!-- Área de Login do Admin (Agora com usuário e senha fixos) -->
+        <div id="areaLogin" class="area-login">
+            <h3>🔐 Área Restrita (Envio de Arquivos)</h3>
+            <form id="formLogin">
+                <input type="text" id="userAdmin" placeholder="Usuário Admin" required>
+                <input type="password" id="senhaAdmin" placeholder="Senha Admin" required>
+                <button type="submit" class="btn-login">Acessar Painel</button>
+            </form>
+            <p style="font-size: 12px; color: #aaa; margin-top: 10px;">Apenas o administrador pode enviar novos arquivos.</p>
+        </div>
+
+        <!-- Área de Upload do Admin (fica escondida até logar) -->
+        <div id="areaUpload" class="area-upload" style="display: none;">
+            <h3>📤 Enviar Novo Arquivo (Admin)</h3>
+            <button onclick="logout()" class="btn-sair">🚪 Sair do Admin</button>
+            <br><br>
+            
+            <form id="formUpload">
+                <div class="campo-nome">
+                    <input type="text" id="nomeArquivo" placeholder="Digite o nome para o catálogo...">
+                </div>
+                
+                <input type="file" id="inputFile" accept=".mp3,.mp4,.pdf,.txt,.jpg,.jpeg,.png">
+                <label for="inputFile" class="label-upload">📂 Escolher Arquivo do Computador</label>
+                <span id="nomeArquivoEscolhido" class="nome-escolhido"></span>
+                
+                <br><br>
+                <button type="submit" class="btn-enviar">🚀 Enviar Direto para o GitHub</button>
+            </form>
+        </div>
+
+        <h3 class="titulo-lista">📥 Músicas e Vídeos Disponíveis</h3>
+        <div id="listaArquivos" class="lista-arquivos"></div>
+    </div>
+
+    <script src="arquivos.js"></script>
+</body>
+</html>
