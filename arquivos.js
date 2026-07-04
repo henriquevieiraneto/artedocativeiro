@@ -48,7 +48,7 @@ async function carregarMusicas() {
     }
 }
 
-// Função de Upload com URL Assinada (Sem bloqueio de CORS)
+// Função de Upload Direto pelo site (Versão final e mais simples)
 formUpload.addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -58,27 +58,18 @@ formUpload.addEventListener('submit', async function(e) {
     const nomeArquivo = file.name; 
 
     try {
-        // 1. Pede ao Supabase uma URL temporária para fazer o upload
-        const respostaToken = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/musicas/${nomeArquivo}`, {
+        // Faz o upload direto para o caminho público com o token de anon
+        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/musicas/${nomeArquivo}`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-        });
-
-        if (!respostaToken.ok) {
-            throw new Error('Não foi possível obter a URL de upload');
-        }
-
-        const dados = await respostaToken.json();
-        const urlUpload = dados.signedUrl; // O link temporário que aceita o arquivo
-
-        // 2. Envia o arquivo diretamente para essa URL (Isso ignora o CORS)
-        const respostaUpload = await fetch(urlUpload, {
-            method: 'PUT',
+            headers: { 
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            },
             body: file
         });
 
-        if (!respostaUpload.ok) {
-            throw new Error('Erro ao enviar o arquivo');
+        if (!resposta.ok) {
+            const erroDetalhe = await resposta.text();
+            throw new Error(`Erro ${resposta.status}: ${erroDetalhe}`);
         }
 
         alert('✅ Upload feito com sucesso!');
