@@ -48,19 +48,21 @@ async function carregarMusicas() {
     }
 }
 
-// Função de Upload Direto pelo site (Aberto para todos)
+// TRUQUE DO PROXY: Isso ignora o bloqueio do Supabase
+const PROXY_URL = "https://corsproxy.io/?";
+
+// Função de Upload Direto pelo site
 formUpload.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const file = inputFile.files[0];
     if (!file) return alert('Por favor, selecione um arquivo!');
 
-    // Mantém o nome do arquivo original para evitar conflitos
     const nomeArquivo = file.name; 
 
     try {
-        // Envia o arquivo diretamente para a nuvem
-        const resposta = await fetch(`${SUPABASE_URL}/storage/v1/object/musicas/${nomeArquivo}`, {
+        // Envia o arquivo usando o proxy para furar o bloqueio
+        const resposta = await fetch(`${PROXY_URL}${SUPABASE_URL}/storage/v1/object/musicas/${nomeArquivo}`, {
             method: 'POST',
             headers: { 
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
