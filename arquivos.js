@@ -4,7 +4,7 @@ const REPO_NAME = "artedocativeiro";
 const CAMINHO_BIBLIOTECA = "biblioteca";
 
 // 🔑 Token fixo (Já está definido como constante global)
-const TOKEN_GIT = "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";
+const TOKEN_GIT = "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";
 
 // ⚠️ Senha do Admin
 const SENHA_ADMIN = "artedocativeiro2009";
