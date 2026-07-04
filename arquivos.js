@@ -1,7 +1,12 @@
 const lista = document.getElementById('listaArquivos');
 
-// LISTA DE MÚSICAS QUE ESTÃO NA PASTA 'musicas' DO SEU PROJETO
-// Para adicionar uma nova, basta copiar a linha e mudar o nome.
+// Para remover o formulário de upload da tela
+const formUpload = document.getElementById('formUpload');
+if (formUpload) {
+    formUpload.style.display = 'none';
+}
+
+// LISTA DE MÚSICAS (Adicione novas linhas conforme colocar MP3s na pasta)
 const catalogo = [
     { nome: "Capoeira é nossa arte", arquivo: "Capoeira é Nossa Arte.mp3" },
     { nome: "Capoeira", arquivo: "Capoeira.mp3" },
@@ -19,7 +24,7 @@ function renderizarArquivos() {
         const card = document.createElement('div');
         card.className = 'card-arquivo';
 
-        // O Netlify vai servir o arquivo a partir da pasta raiz do site
+        // O Netlify vai buscar o arquivo na pasta 'musicas' da raiz do site
         const urlArquivo = `musicas/${item.arquivo}`;
 
         card.innerHTML = `

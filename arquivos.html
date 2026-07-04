@@ -20,27 +20,8 @@
     <div class="container">
         <header class="cabecalho-arquivos">
             <h1>📚 Biblioteca de Arquivos</h1>
-            <p>Aqui você pode enviar, ouvir e baixar músicas e vídeos da nossa capoeira. (Público)</p>
+            <p>Aqui você pode ouvir e baixar músicas e vídeos da nossa capoeira. (Público)</p>
         </header>
-
-        <!-- Área de Upload (Aberta para todos) -->
-        <div class="area-upload">
-            <h3>📤 Enviar Novo Arquivo</h3>
-            <p class="sub-info">Formatos suportados: MP3, MP4, PDF, TXT, JPG.</p>
-            
-            <form id="formUpload">
-                <div class="campo-nome">
-                    <input type="text" id="nomeArquivo" placeholder="Digite o nome para o catálogo...">
-                </div>
-                
-                <input type="file" id="inputFile" accept=".mp3,.mp4,.pdf,.txt,.jpg,.jpeg,.png">
-                <label for="inputFile" class="label-upload">📂 Escolher Arquivo do Computador</label>
-                <span id="nomeArquivoEscolhido" class="nome-escolhido"></span>
-                
-                <br><br>
-                <button type="submit" class="btn-enviar">🚀 Enviar para Biblioteca</button>
-            </form>
-        </div>
 
         <h3 class="titulo-lista">📥 Músicas e Vídeos Disponíveis</h3>
         <div id="listaArquivos" class="lista-arquivos"></div>
