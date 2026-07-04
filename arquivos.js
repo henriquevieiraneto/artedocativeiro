@@ -6,7 +6,7 @@ const CAMINHO_BIBLIOTECA = "biblioteca";
 const VERSAO_SITE = "v2"; // Mudar isso força a reinicialização
 
 // 🔑 Token fixo no código (totalmente novo e desbloqueado)
-const TOKEN_GIT = "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";
+const TOKEN_GIT = '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';
 
 // ⚠️ Senha do Admin
 const SENHA_ADMIN = "admin";
